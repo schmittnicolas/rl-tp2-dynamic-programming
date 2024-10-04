@@ -26,7 +26,15 @@ def mdp_value_iteration(mdp: MDP, max_iter: int = 1000, gamma=1.0) -> np.ndarray
     """
     values = np.zeros(mdp.observation_space.n)
     # BEGIN SOLUTION
-    # END SOLUTION
+    for _ in range(max_iter):
+        prev_val = values.copy()
+        action_values = []
+        for state in range(mdp.observation_space.n):
+            for action in range(mdp.action_space.n):
+                next_state, reward, done = mdp.P[state][action]
+                total = reward + gamma * prev_val[next_state]
+                action_values.append(total)
+            values[state] = max(action_values)
     return values
 
 
@@ -40,18 +48,15 @@ def grid_world_value_iteration(
     Estimation de la fonction de valeur grâce à l'algorithme "value iteration".
     theta est le seuil de convergence (différence maximale entre deux itérations).
     """
-    values = np.zeros((4, 4))
-    # BEGIN SOLUTION
-    # END SOLUTION
+    
 
 
 def value_iteration_per_state(env, values, gamma, prev_val, delta):
     row, col = env.current_position
     values[row, col] = float("-inf")
     for action in range(env.action_space.n):
-        next_states = env.get_next_states(action=action)
         current_sum = 0
-        for next_state, reward, probability, _, _ in next_states:
+        for next_state, reward, done in next_states:
             # print((row, col), next_state, reward, probability)
             next_row, next_col = next_state
             current_sum += (
@@ -72,3 +77,10 @@ def stochastic_grid_world_value_iteration(
 ) -> np.ndarray:
     values = np.zeros((4, 4))
     # BEGIN SOLUTION
+    delta = theta + 1
+    while delta > theta:
+        prev_val = values.copy()
+        delta = 0
+        for row in range(4):
+            for col in range(4):
+                delta = value_iteration_per_state(env, values, gamma, prev_val, delta)
