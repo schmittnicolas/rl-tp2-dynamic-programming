@@ -50,7 +50,7 @@ class GridWorldEnv(gym.Env):
             self.left_postion,
             self.right_postion,
         ]
-        # self.current_position = (0, 0)
+        #self.current_position = (0, 0)
 
     def set_state(self, row: int, col: int) -> None:
         """
